@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDb, ensureSchema } from "@/lib/db";
+import { run, ensureSchema } from "@/lib/db";
 import { validateCharityPayload } from "@/lib/validation";
 
 export async function POST(req: Request) {
@@ -26,9 +26,9 @@ export async function POST(req: Request) {
   } = result.data;
 
   await ensureSchema();
-  await getDb().execute({
-    sql: "INSERT INTO charity_donations (giving_method, name, code_name, contact_number, donation_type, item, quantity, message, proof_of_payment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    args: [
+  await run(
+    "INSERT INTO charity_donations (giving_method, name, code_name, contact_number, donation_type, item, quantity, message, proof_of_payment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
       givingMethod,
       name,
       codeName,
@@ -38,8 +38,8 @@ export async function POST(req: Request) {
       quantity,
       message,
       proofOfPayment,
-    ],
-  });
+    ]
+  );
 
   return NextResponse.json({ success: true });
 }

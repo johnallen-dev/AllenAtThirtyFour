@@ -1,40 +1,50 @@
-import { createClient, type Client } from "@libsql/client";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-let client: Client | null = null;
-let schemaReady: Promise<void> | null = null;
+export function getDb(): D1Database {
+  const { env } = getCloudflareContext();
+  return env.DB;
+}
 
-export function getDb(): Client {
-  if (!client) {
-    const url = process.env.TURSO_DATABASE_URL;
-    if (!url) {
-      throw new Error("TURSO_DATABASE_URL is not set");
-    }
-    client = createClient({
-      url,
-      authToken: process.env.TURSO_AUTH_TOKEN,
-    });
-  }
-  return client;
+export async function run(sql: string, args: unknown[] = []): Promise<void> {
+  await getDb()
+    .prepare(sql)
+    .bind(...args)
+    .run();
+}
+
+export async function all<T = Record<string, unknown>>(
+  sql: string,
+  args: unknown[] = []
+): Promise<T[]> {
+  const { results } = await getDb()
+    .prepare(sql)
+    .bind(...args)
+    .all<T>();
+  return results;
+}
+
+async function exec(sql: string): Promise<void> {
+  await getDb().prepare(sql).run();
 }
 
 async function addColumnIfMissing(
-  db: Client,
   table: string,
   column: string,
   type: string
 ): Promise<void> {
   try {
-    await db.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${type};`);
+    await exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
   } catch {
     // column already exists — safe to ignore
   }
 }
 
+let schemaReady: Promise<void> | null = null;
+
 export async function ensureSchema(): Promise<void> {
   if (!schemaReady) {
-    const db = getDb();
     schemaReady = (async () => {
-      await db.execute(`
+      await exec(`
         CREATE TABLE IF NOT EXISTS givers (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
@@ -43,9 +53,9 @@ export async function ensureSchema(): Promise<void> {
           quantity INTEGER NOT NULL,
           message TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
+        )
       `);
-      await db.execute(`
+      await exec(`
         CREATE TABLE IF NOT EXISTS receivers (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
@@ -54,9 +64,9 @@ export async function ensureSchema(): Promise<void> {
           gift_2 TEXT,
           message TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
+        )
       `);
-      await db.execute(`
+      await exec(`
         CREATE TABLE IF NOT EXISTS charity_donations (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           giving_method TEXT NOT NULL,
@@ -69,13 +79,13 @@ export async function ensureSchema(): Promise<void> {
           message TEXT,
           proof_of_payment TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
+        )
       `);
-      await addColumnIfMissing(db, "givers", "message", "TEXT");
-      await addColumnIfMissing(db, "receivers", "message", "TEXT");
-      await addColumnIfMissing(db, "charity_donations", "code_name", "TEXT");
-      await addColumnIfMissing(db, "charity_donations", "message", "TEXT");
-      await addColumnIfMissing(db, "charity_donations", "proof_of_payment", "TEXT");
+      await addColumnIfMissing("givers", "message", "TEXT");
+      await addColumnIfMissing("receivers", "message", "TEXT");
+      await addColumnIfMissing("charity_donations", "code_name", "TEXT");
+      await addColumnIfMissing("charity_donations", "message", "TEXT");
+      await addColumnIfMissing("charity_donations", "proof_of_payment", "TEXT");
     })();
   }
   return schemaReady;

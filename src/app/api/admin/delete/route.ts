@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, ensureSchema } from "@/lib/db";
+import { run, ensureSchema } from "@/lib/db";
 import { verifySessionToken, ADMIN_COOKIE_NAME } from "@/lib/auth";
 
 const TABLES = {
@@ -27,10 +27,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   await ensureSchema();
-  await getDb().execute({
-    sql: `DELETE FROM ${TABLES[type]} WHERE id = ?`,
-    args: [id],
-  });
+  await run(`DELETE FROM ${TABLES[type]} WHERE id = ?`, [id]);
 
   return NextResponse.json({ success: true });
 }

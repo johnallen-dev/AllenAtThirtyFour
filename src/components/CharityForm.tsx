@@ -87,7 +87,7 @@ export default function CharityForm() {
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
         setErrorMsg(data.error ?? "Something went wrong. Please try again.");
         setStatus("error");
         return;
