@@ -12,7 +12,7 @@
     {
       "binding": "DB",
       "database_name": "allens-birthday",
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_id": "bf544086-abab-4f41-9152-83de5e404f48"
     }
   ],
   "observability": {
