@@ -108,6 +108,25 @@ function ProofThumbnail({
   );
 }
 
+function MessageCell({
+  message,
+  onView,
+}: {
+  message: string | null;
+  onView: () => void;
+}) {
+  if (!message) return <span>—</span>;
+  return (
+    <button
+      type="button"
+      onClick={onView}
+      className="block max-w-[220px] truncate text-left underline decoration-dotted decoration-purple-300 hover:text-purple-900 transition-colors"
+    >
+      {message}
+    </button>
+  );
+}
+
 export default function AdminDashboard({
   data,
   onDelete,
@@ -117,6 +136,7 @@ export default function AdminDashboard({
 }) {
   const [summary, setSummary] = useState<"charity" | "gifting">("gifting");
   const [viewProof, setViewProof] = useState<string | null>(null);
+  const [viewMessage, setViewMessage] = useState<string | null>(null);
 
   function confirmDelete(type: EntryType, id: number) {
     if (window.confirm("Delete this entry? This cannot be undone.")) {
@@ -209,8 +229,8 @@ export default function AdminDashboard({
                       <td className="px-4 py-3">{donationTypeLabel(c.donation_type)}</td>
                       <td className="px-4 py-3">{c.item || "—"}</td>
                       <td className="px-4 py-3">{c.quantity ?? "—"}</td>
-                      <td className="px-4 py-3 max-w-[220px] truncate" title={c.message ?? undefined}>
-                        {c.message || "—"}
+                      <td className="px-4 py-3">
+                        <MessageCell message={c.message} onView={() => setViewMessage(c.message)} />
                       </td>
                       <td className="px-4 py-3">
                         {c.proof_of_payment ? (
@@ -320,8 +340,8 @@ export default function AdminDashboard({
                       <td className="px-4 py-3">{g.contact_number}</td>
                       <td className="px-4 py-3">{g.item}</td>
                       <td className="px-4 py-3">{g.quantity}</td>
-                      <td className="px-4 py-3 max-w-[220px] truncate" title={g.message ?? undefined}>
-                        {g.message || "—"}
+                      <td className="px-4 py-3">
+                        <MessageCell message={g.message} onView={() => setViewMessage(g.message)} />
                       </td>
                       <td className="px-4 py-3 text-purple-500">
                         {formatDate(g.created_at)}
@@ -393,8 +413,8 @@ export default function AdminDashboard({
                       <td className="px-4 py-3">
                         {r.gift_2 ? getGiftLabel(r.gift_2) : "—"}
                       </td>
-                      <td className="px-4 py-3 max-w-[220px] truncate" title={r.message ?? undefined}>
-                        {r.message || "—"}
+                      <td className="px-4 py-3">
+                        <MessageCell message={r.message} onView={() => setViewMessage(r.message)} />
                       </td>
                       <td className="px-4 py-3 text-purple-500">
                         {formatDate(r.created_at)}
@@ -464,6 +484,30 @@ export default function AdminDashboard({
               type="button"
               onClick={() => setViewProof(null)}
               className="mt-4 rounded-full border border-purple-200 text-purple-600 px-5 py-2.5 text-sm font-medium hover:bg-purple-50 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {viewMessage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-purple-950/70 backdrop-blur-sm px-4 py-8"
+          onClick={() => setViewMessage(null)}
+        >
+          <div
+            className="bg-white rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold text-purple-900 mb-2">Message</p>
+            <p className="text-sm text-purple-700 leading-relaxed whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
+              {viewMessage}
+            </p>
+            <button
+              type="button"
+              onClick={() => setViewMessage(null)}
+              className="mt-4 w-full rounded-full border border-purple-200 text-purple-600 px-5 py-2.5 text-sm font-medium hover:bg-purple-50 transition-colors"
             >
               Close
             </button>
