@@ -19,7 +19,7 @@ export const GIFTS: Gift[] = [
   {
     id: "mini-retreat",
     label: "Mini Retreat Session",
-    icon: "🧘‍♀️🧘",
+    icon: "🧍‍♀️🧍",
     blurb: "A little pause just for you",
     limit: 1,
     details: {
