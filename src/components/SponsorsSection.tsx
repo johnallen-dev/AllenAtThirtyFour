@@ -24,7 +24,7 @@ export default function SponsorsSection() {
               <img
                 src={sponsor.logo}
                 alt={`${sponsor.name} logo`}
-                className="w-full h-full object-cover object-left"
+                className="w-full h-full object-cover"
               />
             </span>
             <span className="text-xs font-medium text-purple-700 text-center leading-tight">
