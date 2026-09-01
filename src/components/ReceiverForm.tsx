@@ -176,6 +176,30 @@ export default function ReceiverForm() {
         />
       </div>
 
+      <a
+        href="https://www.facebook.com/p/Homies-Clothing-61577514410406/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-3 rounded-2xl bg-purple-50 p-4 hover:bg-purple-100 transition-colors"
+      >
+        <span className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Homies.png"
+            alt="Homies Clothing logo"
+            className="w-full h-full object-cover object-left"
+          />
+        </span>
+        <span>
+          <span className="block text-xs text-purple-500">
+            Shirt &amp; Cap gifts sponsored by
+          </span>
+          <span className="block text-sm font-semibold text-purple-700">
+            Homies Clothing
+          </span>
+        </span>
+      </a>
+
       <button
         type="submit"
         disabled={!canSubmit || status === "submitting"}
