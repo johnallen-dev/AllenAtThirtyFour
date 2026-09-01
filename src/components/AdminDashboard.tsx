@@ -218,6 +218,8 @@ export default function AdminDashboard({
                             src={c.proof_of_payment}
                             onClick={() => setViewProof(c.proof_of_payment)}
                           />
+                        ) : c.donation_type === "monetary" ? (
+                          <span className="text-xs text-purple-500">💵 Cash</span>
                         ) : (
                           "—"
                         )}
@@ -270,13 +272,17 @@ export default function AdminDashboard({
                         &ldquo;{c.message}&rdquo;
                       </p>
                     )}
-                    {c.proof_of_payment && (
+                    {c.proof_of_payment ? (
                       <div className="pt-1">
                         <ProofThumbnail
                           src={c.proof_of_payment}
                           onClick={() => setViewProof(c.proof_of_payment)}
                         />
                       </div>
+                    ) : (
+                      c.donation_type === "monetary" && (
+                        <p className="text-xs text-purple-500">💵 Cash</p>
+                      )
                     )}
                     <p className="text-xs text-purple-400">{formatDate(c.created_at)}</p>
                   </div>

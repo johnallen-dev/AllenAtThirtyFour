@@ -136,7 +136,7 @@ export function validateCharityPayload(body: unknown): CharityValidationResult {
   }
 
   let proofOfPayment: string | null = null;
-  if (donationType === "monetary") {
+  if (donationType === "monetary" && !b.isCash) {
     proofOfPayment = String(b.proofOfPayment ?? "").trim();
     if (!proofOfPayment || !proofOfPayment.startsWith("data:image/")) {
       return {

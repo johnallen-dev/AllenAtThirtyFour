@@ -20,6 +20,7 @@ export default function CharityForm() {
   const [proofDataUrl, setProofDataUrl] = useState<string | null>(null);
   const [proofFileName, setProofFileName] = useState<string | null>(null);
   const [proofError, setProofError] = useState<string | null>(null);
+  const [isCash, setIsCash] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -30,7 +31,7 @@ export default function CharityForm() {
       (name.trim().length > 0 && contactNumber.trim().length > 0)) &&
     (donationType !== "in-kind" ||
       (item.trim().length > 0 && Number(quantity) >= 1)) &&
-    (donationType !== "monetary" || !!proofDataUrl);
+    (donationType !== "monetary" || isCash || !!proofDataUrl);
 
   function handleProofChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -82,7 +83,9 @@ export default function CharityForm() {
           item: donationType === "in-kind" ? item : null,
           quantity: donationType === "in-kind" ? Number(quantity) : null,
           message,
-          proofOfPayment: donationType === "monetary" ? proofDataUrl : null,
+          isCash: donationType === "monetary" ? isCash : false,
+          proofOfPayment:
+            donationType === "monetary" && !isCash ? proofDataUrl : null,
         }),
       });
 
@@ -293,48 +296,71 @@ export default function CharityForm() {
           </p>
 
           <div>
-            <label htmlFor="proof" className="block text-sm font-medium text-purple-900 mb-1.5">
-              Proof of Transaction
-            </label>
-            <p className="text-xs text-purple-500/80 mb-2 leading-relaxed">
-              Please attach a screenshot or photo of your payment confirmation
-              (max 2MB).
-            </p>
-
-            {proofDataUrl ? (
-              <div className="flex items-center gap-3 rounded-xl border border-purple-200 px-4 py-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={proofDataUrl}
-                  alt="Proof of transaction preview"
-                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                />
-                <span className="flex-1 text-sm text-purple-700 truncate">
-                  {proofFileName}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setProofDataUrl(null);
-                    setProofFileName(null);
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="proof" className="text-sm font-medium text-purple-900">
+                Proof of Transaction
+              </label>
+              <label className="flex items-center gap-1.5 text-sm text-purple-700 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isCash}
+                  onChange={(e) => {
+                    setIsCash(e.target.checked);
+                    setProofError(null);
                   }}
-                  className="text-xs font-medium text-rose-500 hover:text-rose-600 transition-colors flex-shrink-0"
-                >
-                  Remove
-                </button>
-              </div>
+                  className="w-4 h-4 rounded border-purple-300 text-purple-500 focus:ring-purple-400"
+                />
+                Cash
+              </label>
+            </div>
+
+            {isCash ? (
+              <p className="rounded-xl bg-purple-50 text-purple-600 text-sm px-4 py-3">
+                Got it — no proof needed for a cash donation. 💜
+              </p>
             ) : (
-              <input
-                id="proof"
-                type="file"
-                accept="image/*"
-                onChange={handleProofChange}
-                required
-                className="w-full rounded-xl border border-purple-200 px-4 py-3 min-h-[44px] text-sm text-purple-600 file:mr-3 file:rounded-full file:border-0 file:bg-purple-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-            )}
-            {proofError && (
-              <p className="mt-1.5 text-xs text-rose-600">{proofError}</p>
+              <>
+                <p className="text-xs text-purple-500/80 mb-2 leading-relaxed">
+                  Please attach a screenshot or photo of your payment
+                  confirmation (max 2MB).
+                </p>
+
+                {proofDataUrl ? (
+                  <div className="flex items-center gap-3 rounded-xl border border-purple-200 px-4 py-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={proofDataUrl}
+                      alt="Proof of transaction preview"
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                    />
+                    <span className="flex-1 text-sm text-purple-700 truncate">
+                      {proofFileName}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProofDataUrl(null);
+                        setProofFileName(null);
+                      }}
+                      className="text-xs font-medium text-rose-500 hover:text-rose-600 transition-colors flex-shrink-0"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    id="proof"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProofChange}
+                    required
+                    className="w-full rounded-xl border border-purple-200 px-4 py-3 min-h-[44px] text-sm text-purple-600 file:mr-3 file:rounded-full file:border-0 file:bg-purple-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
+                )}
+                {proofError && (
+                  <p className="mt-1.5 text-xs text-rose-600">{proofError}</p>
+                )}
+              </>
             )}
           </div>
         </>
