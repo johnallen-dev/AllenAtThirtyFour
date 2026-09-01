@@ -81,6 +81,13 @@ export async function ensureSchema(): Promise<void> {
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
         )
       `);
+      await exec(`
+        CREATE TABLE IF NOT EXISTS page_visits (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          path TEXT NOT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `);
       await addColumnIfMissing("givers", "message", "TEXT");
       await addColumnIfMissing("receivers", "message", "TEXT");
       await addColumnIfMissing("charity_donations", "code_name", "TEXT");

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   }
 
   await ensureSchema();
-  const [givers, receivers, charity] = await Promise.all([
+  const [givers, receivers, charity, visitCount] = await Promise.all([
     all(
       "SELECT id, name, contact_number, item, quantity, message, created_at FROM givers ORDER BY created_at DESC"
     ),
@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
     all(
       "SELECT id, giving_method, name, code_name, contact_number, donation_type, item, quantity, message, proof_of_payment, created_at FROM charity_donations ORDER BY created_at DESC"
     ),
+    all<{ count: number }>("SELECT COUNT(*) as count FROM page_visits"),
   ]);
 
   const totalQuantity = givers.reduce(
@@ -35,6 +36,7 @@ export async function GET(req: NextRequest) {
       totalReceivers: receivers.length,
       totalQuantity,
       totalCharityDonations: charity.length,
+      totalVisits: Number(visitCount[0]?.count ?? 0),
     },
   });
 }

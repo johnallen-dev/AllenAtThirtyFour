@@ -47,6 +47,7 @@ export type AdminData = {
     totalReceivers: number;
     totalQuantity: number;
     totalCharityDonations: number;
+    totalVisits: number;
   };
 };
 
@@ -132,7 +133,8 @@ export default function AdminDashboard({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <StatTile label="Total Page Visits" value={data.totals.totalVisits} />
         <StatTile label="Total Givers" value={data.totals.totalGivers} />
         <StatTile label="Total Receivers" value={data.totals.totalReceivers} />
         <StatTile label="Total Gift Quantity" value={data.totals.totalQuantity} />
