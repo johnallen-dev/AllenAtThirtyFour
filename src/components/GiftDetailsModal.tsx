@@ -53,6 +53,25 @@ export default function GiftDetailsModal({
           </p>
         )}
 
+        {details.scheduleOptions && details.scheduleOptions.length > 0 && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-purple-800 text-center">
+              Select date and flow of your choice
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {details.scheduleOptions.map((opt) => (
+                <li
+                  key={opt.date}
+                  className="rounded-xl bg-purple-50 px-3 py-2 text-sm text-purple-700 text-center"
+                >
+                  <span className="font-semibold">{opt.date}</span> —{" "}
+                  {opt.flow}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {details.paragraphs.length > 0 && (
           <div className="mt-4 space-y-3 text-sm text-purple-700/90 leading-relaxed">
             {details.paragraphs.map((p, i) => (

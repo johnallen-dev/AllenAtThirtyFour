@@ -1,7 +1,13 @@
+export type ScheduleOption = {
+  date: string;
+  flow: string;
+};
+
 export type GiftDetails = {
   eventTitle?: string;
   meta?: string[];
   theme?: string;
+  scheduleOptions?: ScheduleOption[];
   paragraphs: string[];
   note?: string;
 };
@@ -47,14 +53,17 @@ export const GIFTS: Gift[] = [
     blurb: "Stretch, breathe, unwind",
     limit: 1,
     details: {
-      eventTitle: "Strong Shoulder Flow",
       meta: [
-        "Date: September 20, 2026",
         "Time: 08:30AM – 09:30AM",
         "Location: Ahon Coffee Taytay",
       ],
+      scheduleOptions: [
+        { date: "September 17, 2026", flow: "Core Flow" },
+        { date: "September 24, 2026", flow: "Restore Balance Flow" },
+        { date: "September 27, 2026", flow: "Full Body Flow" },
+      ],
       paragraphs: [],
-      note: "Make sure you're available on the said date and time when selecting this gift.",
+      note: "Make sure you're available on your chosen date and time when selecting this gift.",
     },
   },
   {
