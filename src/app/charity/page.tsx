@@ -2,6 +2,7 @@ import CharityForm from "@/components/CharityForm";
 import DonationCategoryCard from "@/components/DonationItemCard";
 import SendItemInfo from "@/components/SendItemInfo";
 import QrCodeCard from "@/components/QrCodeCard";
+import SponsorsSection from "@/components/SponsorsSection";
 import { CRIBS_FOUNDATION, DONATION_ITEMS_NEEDED } from "@/lib/charity";
 
 export const metadata = {
@@ -92,6 +93,7 @@ export default function CharityPage() {
       </section>
 
       <CharityForm />
+      <SponsorsSection />
     </div>
   );
 }

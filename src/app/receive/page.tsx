@@ -1,4 +1,5 @@
 import ReceiverForm from "@/components/ReceiverForm";
+import SponsorsSection from "@/components/SponsorsSection";
 
 export const metadata = {
   title: "Receive with a Grateful Heart — Allen's 34th Birthday",
@@ -6,8 +7,8 @@ export const metadata = {
 
 export default function ReceivePage() {
   return (
-    <div className="max-w-lg mx-auto px-4 py-10 sm:py-14">
-      <div className="text-center mb-8">
+    <div className="max-w-lg mx-auto px-4 py-10 sm:py-14 space-y-6">
+      <div className="text-center mb-2">
         <span className="text-4xl" aria-hidden>
           🎁
         </span>
@@ -22,6 +23,7 @@ export default function ReceivePage() {
         </p>
       </div>
       <ReceiverForm />
+      <SponsorsSection />
     </div>
   );
 }

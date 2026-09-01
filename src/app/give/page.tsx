@@ -1,5 +1,6 @@
 import GiverForm from "@/components/GiverForm";
 import SendItemInfo from "@/components/SendItemInfo";
+import SponsorsSection from "@/components/SponsorsSection";
 
 export const metadata = {
   title: "Give from the Heart — Allen's 34th Birthday",
@@ -28,6 +29,7 @@ export default function GivePage() {
       />
 
       <GiverForm />
+      <SponsorsSection />
     </div>
   );
 }
