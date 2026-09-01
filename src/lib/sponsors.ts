@@ -13,4 +13,10 @@ export const SPONSORS: Sponsor[] = [
     logo: "/Homies.png",
     url: "https://www.facebook.com/p/Homies-Clothing-61577514410406/",
   },
+  {
+    id: "gee-j",
+    name: "Gee-J Apparel",
+    logo: "/Gee J.jpg",
+    url: "https://www.tiktok.com/@gjapparelstore?_r=1&_t=ZS-99JKc3fuJ7Y",
+  },
 ];
