@@ -63,6 +63,7 @@ export default function CharityPage() {
       <SendItemInfo
         title="📦 Sending an In-Kind Donation?"
         note="If you'd like to drop off or send the item yourself, here's where you can reach me:"
+        deliveryNote="We'll be visiting CRIBS Foundation, Inc. on September 16, 2026 (9:00AM–11:00AM) to bring in all the donations gathered — please send your item before then."
       />
 
       <section className="rounded-2xl bg-white shadow-md shadow-purple-100 p-6 sm:p-7 text-center">
