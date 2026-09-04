@@ -31,7 +31,7 @@ export const GIFTS: Gift[] = [
     details: {
       eventTitle: "OM Sweet OM Club",
       meta: [
-        "Date: September 19, 2026",
+        "Date: September 20, 2026",
         "Time: 09:00AM – 12:00NN",
         "Location: Ahon Coffee Taytay",
       ],
@@ -39,7 +39,7 @@ export const GIFTS: Gift[] = [
         "Postcards from the Future: Quantum Visualization and Soul Alignment",
       paragraphs: [
         "Om Sweet Om is not an art club or an art workshop. It is a sacred space co-created by beautiful souls for each and every single person stepping into the space.",
-        "On September 19, 2026, we gather to step outside linear time and anchor into quantum visualization. Through a unique, hands-on soul activity, we will open ourselves to divine synchronicity, receive downloads from our future selves, and align with the timelines meant for us.",
+        "On September 20, 2026, we gather to step outside linear time and anchor into quantum visualization. Through a unique, hands-on soul activity, we will open ourselves to divine synchronicity, receive downloads from our future selves, and align with the timelines meant for us.",
         "No two seats in the room will receive the same experience.",
         "Come ready to play, trust, and collapse the distance between who you are today and who you are becoming. 🧘🏽‍♀️",
       ],
