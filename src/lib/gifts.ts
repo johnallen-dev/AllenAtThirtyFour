@@ -95,10 +95,10 @@ export const GIFTS: Gift[] = [
     label: "Shirt",
     icon: "👕",
     blurb: "Something comfy and new",
-    limit: 6,
+    limit: 7,
     details: {
       paragraphs: [
-        "A random brand-new t-shirt, sizes ranging from Medium to Large, from my friend's shirt brand — proven quality!",
+        "A random brand-new t-shirt, sizes ranging from Medium to Large, from my friend's shirt brand — proven quality! Available for 3 men and 4 women.",
       ],
     },
   },
