@@ -29,6 +29,7 @@ export const GIFTS: Gift[] = [
     icon: "🧍‍♀️🧍",
     blurb: "A little pause just for you",
     limit: 1,
+    available: false,
     details: {
       eventTitle: "OM Sweet OM Club",
       meta: [
@@ -73,6 +74,7 @@ export const GIFTS: Gift[] = [
     icon: "📔",
     blurb: "A keepsake made with love",
     limit: 3,
+    available: false,
     details: {
       paragraphs: [
         "You'll share 20 pictures that I will print, and I'll also provide the DIY materials needed for the scrapbook on September 15. You must be ready with your pictures!",
