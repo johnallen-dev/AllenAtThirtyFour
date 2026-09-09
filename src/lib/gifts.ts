@@ -111,6 +111,7 @@ export const GIFTS: Gift[] = [
     icon: "🧢",
     blurb: "Cute, casual, and cozy",
     limit: 1,
+    available: false,
     details: {
       paragraphs: [
         "A trucker cap from my friend's brand, Homies. White and black in color with a red logo.",
