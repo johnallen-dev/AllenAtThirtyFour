@@ -1,4 +1,4 @@
-import { GIFT_IDS } from "@/lib/gifts";
+import { AVAILABLE_GIFT_IDS } from "@/lib/gifts";
 
 export type GiverPayload = {
   name: string;
@@ -57,10 +57,10 @@ export function validateReceiverPayload(body: unknown): ReceiverValidationResult
   if (!name || !contactNumber || !gift1) {
     return { ok: false, error: "Please fill in all fields and choose a gift." };
   }
-  if (!GIFT_IDS.has(gift1)) {
+  if (!AVAILABLE_GIFT_IDS.has(gift1)) {
     return { ok: false, error: "Invalid gift selection." };
   }
-  if (gift2 && (!GIFT_IDS.has(gift2) || gift2 === gift1)) {
+  if (gift2 && (!AVAILABLE_GIFT_IDS.has(gift2) || gift2 === gift1)) {
     return { ok: false, error: "Invalid second gift selection." };
   }
 

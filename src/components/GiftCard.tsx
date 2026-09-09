@@ -9,20 +9,29 @@ export default function GiftCard({
   selected: boolean;
   onToggle: () => void;
 }) {
+  const available = gift.available !== false;
+
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-pressed={selected}
       className={`relative rounded-2xl p-4 text-left transition-all duration-150 min-h-[110px] flex flex-col justify-between border-2 ${
-        selected
+        !available
+          ? "border-transparent bg-purple-50/60 opacity-50 grayscale cursor-not-allowed"
+          : selected
           ? "border-purple-400 bg-purple-50"
           : "border-transparent bg-white shadow-sm shadow-purple-100 hover:border-purple-200"
       }`}
     >
-      {selected && (
+      {available && selected && (
         <span className="absolute top-2 right-2 w-5 h-5 rounded-full bg-purple-500 text-white text-xs flex items-center justify-center">
           ✓
+        </span>
+      )}
+      {!available && (
+        <span className="absolute top-2 right-2 rounded-full bg-purple-200 text-purple-700 text-[10px] font-semibold px-2 py-0.5">
+          Unavailable
         </span>
       )}
       <span className="text-3xl" aria-hidden>

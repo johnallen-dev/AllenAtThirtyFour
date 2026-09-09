@@ -21,6 +21,12 @@ export default function ReceiverForm() {
     name.trim() && contactNumber.trim() && selected.length > 0;
 
   function toggleGift(id: string) {
+    const gift = GIFTS.find((g) => g.id === id);
+    if (gift?.available === false) {
+      setBlockedMsg("This gift is no longer available.");
+      return;
+    }
+
     setBlockedMsg(null);
     setSelected((prev) => {
       if (prev.includes(id)) {

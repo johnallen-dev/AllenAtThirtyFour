@@ -19,6 +19,7 @@ export type Gift = {
   blurb: string;
   limit: number;
   details: GiftDetails;
+  available?: boolean;
 };
 
 export const GIFTS: Gift[] = [
@@ -84,6 +85,7 @@ export const GIFTS: Gift[] = [
     icon: "🛒",
     blurb: "A little help for the pantry",
     limit: 3,
+    available: false,
     details: {
       paragraphs: [
         "A mix of grocery items which will most likely help you prepare my favorite food, Spaghetti!",
@@ -117,6 +119,10 @@ export const GIFTS: Gift[] = [
 ];
 
 export const GIFT_IDS = new Set(GIFTS.map((g) => g.id));
+
+export const AVAILABLE_GIFT_IDS = new Set(
+  GIFTS.filter((g) => g.available !== false).map((g) => g.id)
+);
 
 export function getGiftLabel(id: string): string {
   return GIFTS.find((g) => g.id === id)?.label ?? id;
