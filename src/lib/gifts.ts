@@ -29,7 +29,6 @@ export const GIFTS: Gift[] = [
     icon: "🧍‍♀️🧍",
     blurb: "A little pause just for you",
     limit: 1,
-    available: false,
     details: {
       eventTitle: "OM Sweet OM Club",
       meta: [
