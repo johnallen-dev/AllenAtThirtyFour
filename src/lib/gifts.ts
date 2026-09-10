@@ -53,6 +53,7 @@ export const GIFTS: Gift[] = [
     icon: "🧘",
     blurb: "Stretch, breathe, unwind",
     limit: 1,
+    available: false,
     details: {
       meta: [
         "Time: 08:30AM – 09:30AM",
