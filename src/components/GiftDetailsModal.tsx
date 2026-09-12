@@ -1,20 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import type { Gift } from "@/lib/gifts";
 
 export default function GiftDetailsModal({
   gift,
   onClose,
+  selectedVariant = null,
+  onSelectVariant,
+  variantCounts = {},
 }: {
   gift: Gift;
   onClose: () => void;
+  selectedVariant?: string | null;
+  onSelectVariant?: (variantId: string) => void;
+  variantCounts?: Record<string, number>;
 }) {
   const { details } = gift;
+  const hasVariants = !!gift.variants && gift.variants.length > 0;
+  const canClose = !hasVariants || !!selectedVariant;
+  const [variantMsg, setVariantMsg] = useState<string | null>(null);
+
+  function handleBackdropClick() {
+    if (canClose) onClose();
+  }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-purple-950/70 backdrop-blur-sm px-4 py-8"
-      onClick={onClose}
+      onClick={handleBackdropClick}
     >
       <div
         className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full max-h-[85vh] overflow-y-auto shadow-2xl"
@@ -80,6 +94,53 @@ export default function GiftDetailsModal({
           </div>
         )}
 
+        {hasVariants && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-purple-800 text-center mb-2">
+              Choose your preferred option
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {gift.variants!.map((v) => {
+                const remaining = v.limit - (variantCounts[v.id] ?? 0);
+                const soldOut = remaining <= 0;
+                const isSelected = selectedVariant === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => {
+                      if (soldOut) {
+                        setVariantMsg("This option is no longer available.");
+                        return;
+                      }
+                      setVariantMsg(null);
+                      onSelectVariant?.(v.id);
+                    }}
+                    aria-pressed={isSelected}
+                    className={`rounded-xl px-3 py-2.5 text-sm font-medium border-2 text-center transition-all duration-150 ${
+                      soldOut
+                        ? "border-transparent bg-purple-50/60 text-purple-300 grayscale cursor-not-allowed"
+                        : isSelected
+                        ? "border-purple-400 bg-purple-50 text-purple-900"
+                        : "border-purple-100 bg-white text-purple-600 hover:border-purple-200"
+                    }`}
+                  >
+                    {v.label}
+                    {soldOut && (
+                      <span className="block text-[10px] mt-0.5">Sold Out</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {variantMsg && (
+              <p className="mt-2 rounded-xl bg-purple-50 text-purple-600 text-xs px-3 py-2 text-center">
+                {variantMsg}
+              </p>
+            )}
+          </div>
+        )}
+
         {details.note && (
           <p className="mt-4 text-xs text-purple-500 italic border-t border-purple-100 pt-3">
             Note: {details.note}
@@ -88,11 +149,17 @@ export default function GiftDetailsModal({
 
         <button
           type="button"
-          onClick={onClose}
-          className="mt-6 w-full rounded-full bg-purple-500 text-white px-6 py-3 min-h-[44px] font-medium hover:bg-purple-600 transition-colors"
+          onClick={() => canClose && onClose()}
+          disabled={!canClose}
+          className="mt-6 w-full rounded-full bg-purple-500 text-white px-6 py-3 min-h-[44px] font-medium hover:bg-purple-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Exit
         </button>
+        {!canClose && (
+          <p className="mt-2 text-xs text-purple-400 text-center">
+            Please choose an option above first.
+          </p>
+        )}
       </div>
     </div>
   );

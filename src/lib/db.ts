@@ -62,6 +62,8 @@ export async function ensureSchema(): Promise<void> {
           contact_number TEXT NOT NULL,
           gift_1 TEXT NOT NULL,
           gift_2 TEXT,
+          gift_1_variant TEXT,
+          gift_2_variant TEXT,
           message TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
         )
@@ -90,6 +92,8 @@ export async function ensureSchema(): Promise<void> {
       `);
       await addColumnIfMissing("givers", "message", "TEXT");
       await addColumnIfMissing("receivers", "message", "TEXT");
+      await addColumnIfMissing("receivers", "gift_1_variant", "TEXT");
+      await addColumnIfMissing("receivers", "gift_2_variant", "TEXT");
       await addColumnIfMissing("charity_donations", "code_name", "TEXT");
       await addColumnIfMissing("charity_donations", "message", "TEXT");
       await addColumnIfMissing("charity_donations", "proof_of_payment", "TEXT");

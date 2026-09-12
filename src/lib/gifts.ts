@@ -3,6 +3,12 @@ export type ScheduleOption = {
   flow: string;
 };
 
+export type GiftVariant = {
+  id: string;
+  label: string;
+  limit: number;
+};
+
 export type GiftDetails = {
   eventTitle?: string;
   meta?: string[];
@@ -20,6 +26,7 @@ export type Gift = {
   limit: number;
   details: GiftDetails;
   available?: boolean;
+  variants?: GiftVariant[];
 };
 
 export const GIFTS: Gift[] = [
@@ -99,10 +106,16 @@ export const GIFTS: Gift[] = [
     label: "Shirt",
     icon: "👕",
     blurb: "Something comfy and new",
-    limit: 7,
+    limit: 5,
+    variants: [
+      { id: "male-3xl", label: "Male – 3XL", limit: 2 },
+      { id: "male-medium", label: "Male – Medium", limit: 1 },
+      { id: "female-green", label: "Female – Green", limit: 1 },
+      { id: "female-yellow", label: "Female – Yellow", limit: 1 },
+    ],
     details: {
       paragraphs: [
-        "A random brand-new t-shirt, sizes ranging from Medium to Large, from my friend's shirt brand — proven quality! Available for 3 men and 4 women.",
+        "A random brand-new t-shirt from my friend's shirt brand — proven quality! Choose your preferred size/color below.",
       ],
     },
   },
@@ -129,4 +142,17 @@ export const AVAILABLE_GIFT_IDS = new Set(
 
 export function getGiftLabel(id: string): string {
   return GIFTS.find((g) => g.id === id)?.label ?? id;
+}
+
+export function getGift(id: string): Gift | undefined {
+  return GIFTS.find((g) => g.id === id);
+}
+
+export function getVariantLabel(
+  giftId: string,
+  variantId: string | null | undefined
+): string | null {
+  if (!variantId) return null;
+  const gift = GIFTS.find((g) => g.id === giftId);
+  return gift?.variants?.find((v) => v.id === variantId)?.label ?? variantId;
 }

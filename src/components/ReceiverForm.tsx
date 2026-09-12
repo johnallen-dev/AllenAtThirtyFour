@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { GIFTS } from "@/lib/gifts";
+import { FormEvent, useEffect, useState } from "react";
+import { GIFTS, type Gift } from "@/lib/gifts";
 import GiftCard from "@/components/GiftCard";
 import GiftDetailsModal from "@/components/GiftDetailsModal";
 
@@ -11,18 +11,53 @@ export default function ReceiverForm() {
   const [name, setName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [giftVariants, setGiftVariants] = useState<Record<string, string>>({});
+  const [variantCounts, setVariantCounts] = useState<
+    Record<string, Record<string, number>>
+  >({});
   const [blockedMsg, setBlockedMsg] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [detailGiftId, setDetailGiftId] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch("/api/gift-availability")
+      .then((res) => res.json())
+      .then((data) => {
+        const counts = (
+          data as { counts?: Record<string, Record<string, number>> }
+        ).counts;
+        setVariantCounts(counts ?? {});
+      })
+      .catch(() => {});
+  }, []);
+
+  function isGiftAvailable(gift: Gift): boolean {
+    if (gift.available === false) return false;
+    if (gift.variants && gift.variants.length > 0) {
+      const counts = variantCounts[gift.id] ?? {};
+      const allSoldOut = gift.variants.every(
+        (v) => (counts[v.id] ?? 0) >= v.limit
+      );
+      if (allSoldOut) return false;
+    }
+    return true;
+  }
+
   const canSubmit =
-    name.trim() && contactNumber.trim() && selected.length > 0;
+    !!name.trim() &&
+    !!contactNumber.trim() &&
+    selected.length > 0 &&
+    selected.every((id) => {
+      const gift = GIFTS.find((g) => g.id === id);
+      if (!gift?.variants || gift.variants.length === 0) return true;
+      return !!giftVariants[id];
+    });
 
   function toggleGift(id: string) {
     const gift = GIFTS.find((g) => g.id === id);
-    if (gift?.available === false) {
+    if (!gift || !isGiftAvailable(gift)) {
       setBlockedMsg("This gift is no longer available.");
       return;
     }
@@ -30,6 +65,11 @@ export default function ReceiverForm() {
     setBlockedMsg(null);
     setSelected((prev) => {
       if (prev.includes(id)) {
+        setGiftVariants((v) => {
+          const next = { ...v };
+          delete next[id];
+          return next;
+        });
         return prev.filter((g) => g !== id);
       }
       if (prev.length >= 2) {
@@ -57,6 +97,8 @@ export default function ReceiverForm() {
           contactNumber,
           gift1: selected[0],
           gift2: selected[1] ?? null,
+          gift1Variant: giftVariants[selected[0]] ?? null,
+          gift2Variant: selected[1] ? giftVariants[selected[1]] ?? null : null,
           message,
         }),
       });
@@ -151,7 +193,14 @@ export default function ReceiverForm() {
             <GiftCard
               key={gift.id}
               gift={gift}
+              available={isGiftAvailable(gift)}
               selected={selected.includes(gift.id)}
+              variantLabel={
+                giftVariants[gift.id]
+                  ? gift.variants?.find((v) => v.id === giftVariants[gift.id])
+                      ?.label
+                  : undefined
+              }
               onToggle={() => toggleGift(gift.id)}
             />
           ))}
@@ -194,6 +243,11 @@ export default function ReceiverForm() {
         <GiftDetailsModal
           gift={detailGift}
           onClose={() => setDetailGiftId(null)}
+          selectedVariant={giftVariants[detailGift.id] ?? null}
+          onSelectVariant={(variantId) =>
+            setGiftVariants((prev) => ({ ...prev, [detailGift.id]: variantId }))
+          }
+          variantCounts={variantCounts[detailGift.id] ?? {}}
         />
       )}
     </form>

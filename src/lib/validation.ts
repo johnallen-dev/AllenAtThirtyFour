@@ -1,4 +1,4 @@
-import { AVAILABLE_GIFT_IDS } from "@/lib/gifts";
+import { AVAILABLE_GIFT_IDS, getGift } from "@/lib/gifts";
 
 export type GiverPayload = {
   name: string;
@@ -35,12 +35,29 @@ export type ReceiverPayload = {
   contactNumber: string;
   gift1: string;
   gift2: string | null;
+  gift1Variant: string | null;
+  gift2Variant: string | null;
   message: string | null;
 };
 
 export type ReceiverValidationResult =
   | { ok: true; data: ReceiverPayload }
   | { ok: false; error: string };
+
+function validateGiftVariant(
+  giftId: string,
+  rawVariant: unknown
+): { ok: true; value: string | null } | { ok: false; error: string } {
+  const gift = getGift(giftId);
+  if (!gift?.variants || gift.variants.length === 0) {
+    return { ok: true, value: null };
+  }
+  const value = String(rawVariant ?? "").trim();
+  if (!value || !gift.variants.some((v) => v.id === value)) {
+    return { ok: false, error: `Please choose an option for ${gift.label}.` };
+  }
+  return { ok: true, value };
+}
 
 export function validateReceiverPayload(body: unknown): ReceiverValidationResult {
   const b = (body ?? {}) as Record<string, unknown>;
@@ -64,7 +81,32 @@ export function validateReceiverPayload(body: unknown): ReceiverValidationResult
     return { ok: false, error: "Invalid second gift selection." };
   }
 
-  return { ok: true, data: { name, contactNumber, gift1, gift2, message } };
+  const gift1VariantResult = validateGiftVariant(gift1, b.gift1Variant);
+  if (!gift1VariantResult.ok) {
+    return { ok: false, error: gift1VariantResult.error };
+  }
+
+  let gift2Variant: string | null = null;
+  if (gift2) {
+    const gift2VariantResult = validateGiftVariant(gift2, b.gift2Variant);
+    if (!gift2VariantResult.ok) {
+      return { ok: false, error: gift2VariantResult.error };
+    }
+    gift2Variant = gift2VariantResult.value;
+  }
+
+  return {
+    ok: true,
+    data: {
+      name,
+      contactNumber,
+      gift1,
+      gift2,
+      gift1Variant: gift1VariantResult.value,
+      gift2Variant,
+      message,
+    },
+  };
 }
 
 export type GivingMethod = "secret" | "open";

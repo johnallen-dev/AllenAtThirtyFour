@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       "SELECT id, name, contact_number, item, quantity, message, created_at FROM givers ORDER BY created_at DESC"
     ),
     all(
-      "SELECT id, name, contact_number, gift_1, gift_2, message, created_at FROM receivers ORDER BY created_at DESC"
+      "SELECT id, name, contact_number, gift_1, gift_2, gift_1_variant, gift_2_variant, message, created_at FROM receivers ORDER BY created_at DESC"
     ),
     all(
       "SELECT id, giving_method, name, code_name, contact_number, donation_type, item, quantity, message, proof_of_payment, created_at FROM charity_donations ORDER BY created_at DESC"

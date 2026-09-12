@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import StatTile from "@/components/StatTile";
-import { getGiftLabel } from "@/lib/gifts";
+import { getGiftLabel, getVariantLabel } from "@/lib/gifts";
 
 export type GiverRow = {
   id: number;
@@ -20,6 +20,8 @@ export type ReceiverRow = {
   contact_number: string;
   gift_1: string;
   gift_2: string | null;
+  gift_1_variant: string | null;
+  gift_2_variant: string | null;
   message: string | null;
   created_at: string;
 };
@@ -71,6 +73,12 @@ function charityDisplayName(c: CharityRow): { label: string; anonymous: boolean 
     return { label: c.code_name || "Anonymous", anonymous: true };
   }
   return { label: c.name || "—", anonymous: false };
+}
+
+function receiverGiftLabel(giftId: string | null, variantId: string | null): string {
+  if (!giftId) return "—";
+  const variantLabel = getVariantLabel(giftId, variantId);
+  return variantLabel ? `${getGiftLabel(giftId)} (${variantLabel})` : getGiftLabel(giftId);
 }
 
 export type EntryType = "giver" | "receiver" | "charity";
@@ -409,9 +417,11 @@ export default function AdminDashboard({
                     <tr key={r.id} className="border-t border-purple-50">
                       <td className="px-4 py-3">{r.name}</td>
                       <td className="px-4 py-3">{r.contact_number}</td>
-                      <td className="px-4 py-3">{getGiftLabel(r.gift_1)}</td>
                       <td className="px-4 py-3">
-                        {r.gift_2 ? getGiftLabel(r.gift_2) : "—"}
+                        {receiverGiftLabel(r.gift_1, r.gift_1_variant)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {r.gift_2 ? receiverGiftLabel(r.gift_2, r.gift_2_variant) : "—"}
                       </td>
                       <td className="px-4 py-3">
                         <MessageCell message={r.message} onView={() => setViewMessage(r.message)} />
@@ -443,8 +453,10 @@ export default function AdminDashboard({
                     <p className="font-medium text-purple-900 pr-6">{r.name}</p>
                     <p className="text-sm text-purple-600">{r.contact_number}</p>
                     <p className="text-sm text-purple-700">
-                      {getGiftLabel(r.gift_1)}
-                      {r.gift_2 ? `, ${getGiftLabel(r.gift_2)}` : ""}
+                      {receiverGiftLabel(r.gift_1, r.gift_1_variant)}
+                      {r.gift_2
+                        ? `, ${receiverGiftLabel(r.gift_2, r.gift_2_variant)}`
+                        : ""}
                     </p>
                     {r.message && (
                       <p className="text-xs text-purple-600 italic">

@@ -3,14 +3,16 @@ import type { Gift } from "@/lib/gifts";
 export default function GiftCard({
   gift,
   selected,
+  available,
+  variantLabel,
   onToggle,
 }: {
   gift: Gift;
   selected: boolean;
+  available: boolean;
+  variantLabel?: string | null;
   onToggle: () => void;
 }) {
-  const available = gift.available !== false;
-
   return (
     <button
       type="button"
@@ -41,7 +43,9 @@ export default function GiftCard({
         <p className="text-sm font-semibold text-purple-900 leading-tight">
           {gift.label}
         </p>
-        <p className="text-xs text-purple-500 mt-0.5">{gift.blurb}</p>
+        <p className="text-xs text-purple-500 mt-0.5">
+          {variantLabel ?? gift.blurb}
+        </p>
       </div>
     </button>
   );
